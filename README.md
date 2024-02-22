@@ -13,7 +13,7 @@ Ce projet consiste en mettre en place un equilibreur de charge en Rust . Ainsi t
   4. Bibliothèques Python requises : Flask.  
 
 ## **Installation des dependances** :
-pour installer la  dépendances Python requises, exécutez la commande suivante  :
+Pour installer la  dépendances Python requises, exécutez la commande suivante  :
 		```pip install Flask```
 
 ## **Utilisation**
@@ -31,7 +31,6 @@ pour installer la  dépendances Python requises, exécutez la commande suivante 
 
 
   ## **Documentation**
-
-       Pour Consulter la documentation de notre projet faire un :
+ Pour Consulter la documentation de notre projet faire un :
 
             ```cargo doc --open```
