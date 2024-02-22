@@ -34,4 +34,4 @@ pour installer la  dépendances Python requises, exécutez la commande suivante 
 
      1. Pour Consulter la documentation de notre projet faire un :
 
-         ```cargo doc --open```
+            ```cargo doc --open```
