@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Introduction detaille"><title>load_balancer::load_balancer - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="load_balancer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../load_balancer/index.html">load_balancer</a><span class="version">0.1.0</span></h2></div><h2 class="location"><a href="#">Module load_balancer</a></h2><div class="sidebar-elems"><section><ul class="block"><li><a href="#structs">Structs</a></li></ul></section><h2><a href="../index.html">In crate load_balancer</a></h2></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../load_balancer/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">load_balancer</a>::<wbr><a class="mod" href="#">load_balancer</a><button id="copy-path" title="Copy item path to clipboard"><img src="../../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../../src/load_balancer/load_balancer.rs.html#1-166">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h3 id="introduction-detaille"><a href="#introduction-detaille">Introduction detaille</a></h3>
+<p>Dans ce module nous allons implementer la logique de notre LoadBalancer</p>
+<p>l’algorithme que nous avons decider d’implementer pour gerer le LoadBalancing est l’algorithme de Round Robin </p>
+<p>Il s’agit d’un algorithme qui choisi sequentiellement chaque serveur dans une pool de serveur
+elle se base sur un indice de rotation qui se charge de determiner quelle source utiliser pour chaque nouvelle demande</p>
+<h3 id="structure"><a href="#structure">Structure</a></h3>
+<p>Nous allons commencer par definir la structure de notre LoadBalancer </p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">pub struct </span>LoadBalancer { 
+   listener_config: String, 
+    servers: Vec&lt;String&gt;, 
+                  }</code></pre></div>
+<p>Cette structure  comprend  2 parametres a savoir un vecteur qui va stocker les serveurs auxquels notre LoadBalancer sera liés , 
+puis un autre parametre listener_config  qui stocke la configuration du TcpListener associer a notre LoadBalancer 
+TcpListener ici represente une structure qui permet de creer un point liaison a partir duquel nos connexions Tcp entrantes peuvent etre gerer , 
+en gros il nous permet de creer un serveur Tcp basique </p>
+<h3 id="methode-de-la-structure-loadbalancer"><a href="#methode-de-la-structure-loadbalancer">Methode de la structure LoadBalancer</a></h3>
+<p>Par la suite nous allons implementer les differentes methodes de notre LoadBalancer a savoir :</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code> <span class="kw">pub fn </span>new(bind_addr: <span class="kw-2">&amp;</span>str, servers: Vec&lt;String&gt;)</code></pre></div>
+<p>qui nous permettra de creer une nouvelle instance de notre LoadBalancer</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code> <span class="kw">pub fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>)</code></pre></div>
+<p>Methode dans laquelle on va implementer la logique d’execution de notre LoadBalancer </p>
+<h2 id="analyse-de-la-methode-run"><a href="#analyse-de-la-methode-run">Analyse de la methode run()</a></h2>
+<p>Deux  Objets sont declare dans cette methode , a savoir </p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>listener = TcpListener::bind(<span class="kw-2">&amp;</span><span class="self">self</span>.listener_config).expect(<span class="string">"Failed to bind address"</span>)</code></pre></div>
+<p>qui se charge d’ecouter  sur une adresse specifique au travers de la liaison faite a partir de la methode Bind() de la structure TcpListener
+Puis nous avons l’objet </p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">let </span>servers = Arc::new(Mutex::new(<span class="self">self</span>.servers.clone()));</code></pre></div>
+<p>qui va stocker une copie des serveurs , permettant ainsi au differents Threads d’acceder a une copie de nos serveur , sans toutefois  modifier la structure principale . 
+Nos objets crees, nous allons par la suite ecouter chaque connection entrante  et nous allons  boucler sur chacune d’entres elles , afin de les traiter individuelement .
+Ainsi a l’aide de la boucle for et de la methode incoming() nous allons iterer sur chaque connection entrantes</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">for </span>stream <span class="kw">in </span>listener.incoming()</code></pre></div>
+<p>plus precisement  la methode incomming() de la structure TcpStream , creer un iterateur , en attente de connexion ,  qui renvoi un valeur correspondant a la prochaine connexion entrante
+A l’aide de la methode  except() on recupere cette connection entrante , et on pourra generer par la meme occasion une exception dans le cas l’acceptation ne se deroule pas comme prevu</p>
+<p>Par la suite nous allons creer un nouveau Threads qui se chargera de gerer chaque nouvelles  connection entrante , selon le modele de gestion definit dans la fonction handle_client()</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code> thread::spawn()</code></pre></div>
+<p>Nous avons opter pour une gestion des connection entrante dans un Threads differentes , du Threads principale , pour eviter les probleme lies a la duree de vie </p>
+<h2 id="analyse-de-la-methode-handle_client"><a href="#analyse-de-la-methode-handle_client">Analyse de la methode handle_client()</a></h2>
+<p>Cette methode se charge de gerer les differentes connexions entrantes  des utilisateurs et de determiner vers quels serveurs diriger les differentes requetes des clients </p>
+<p>Ainsi on commence par initialiser a 0 la variable mutable rr_index , cette variable nous permettra de suivre l’index des serveurs a utiliser lors de l’achemeniment des requete 
+par notre LoadBalancer
+Puis dans une boucle infinie   on recupere , le prochain serveur vers lequel nos requetes seront acheminés
+en s’assurant que notre Thread ai un accès exclussif a notre liste de serveur </p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>  <span class="kw">let </span>server_addr = {  <span class="kw">let </span>servers = servers.lock().unwrap(); servers[rr_index].clone() };         </code></pre></div>
+<p>Par la suite a partir d’un match() on realise une tentative de connexion vers le serveur en question en utilisant la methode connect() de la structure TcpStream</p>
+<p>Cette methode retourne un Result&lt;TcpStream,Error&gt; qui indique si la connexion a reussi ou pas. Dans le cas ou la 
+connexion a reussi [Ok(mut server_stream)]  on definit les differents operations liées au  relais de données .
+Ainsi dans un premier temps on definit un tampon de 512 octects pour stocker les donnees du client , puis on lit les données provenant du client (client_stream.read()) et on les stocke dans le buffer</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>  <span class="kw">let </span><span class="kw-2">mut </span>buffer = [<span class="number">0</span>; <span class="number">512</span>];
+  <span class="kw">let </span>bytes_read = client_stream.read(<span class="kw-2">&amp;mut </span>buffer).unwrap();       </code></pre></div>
+<p>Ici bytes_read va stocker le nombre d’octect lu</p>
+<p>Puis ces données lu depuis le client sont ecrite directement sur le serveur server_stream</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>  server_stream.write_all(<span class="kw-2">&amp;</span>buffer[..bytes_read]).unwrap();         </code></pre></div>
+<p>Par la suite on crée un vecteur vide qui va contenir les reponses du serveur . </p>
+<p>On lit la reponse complete du serveur dans  le vecteur , puis on ecrit cette reponse sur client_stream qui represente notre connexion client </p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code>  <span class="kw">let </span><span class="kw-2">mut </span>server_response = Vec::new();
+   server_stream.read_to_end(<span class="kw-2">&amp;mut </span>server_response).unwrap();
+    client_stream.write_all(<span class="kw-2">&amp;</span>server_response).unwrap();      </code></pre></div>
+</div></details><h2 id="structs" class="section-header"><a href="#structs">Structs</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.LoadBalancer.html" title="struct load_balancer::load_balancer::LoadBalancer">LoadBalancer</a></div></li></ul></section></div></main></body></html>
