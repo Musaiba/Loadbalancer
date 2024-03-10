@@ -18,12 +18,14 @@ use log::{info, warn, error};
 ///
 /// Ce LoadBalancer distribue les requêtes entrantes entre une pool de serveurs
 /// en utilisant l'algorithme Round Robin pour une distribution équitable.
-
+#[allow(dead_code)]
 pub struct LoadBalancer {
     /// Configuration pour écouter les connexions TCP. Exemple : "127.0.0.1:8080".
     listener_config: String, 
     /// Liste des adresses des serveurs (ex: "192.168.1.1:80") vers lesquels router les demandes.
     servers: Vec<String>,
+    /// Indice actuel du serveur dans la liste des serveurs, utilisé pour l'algorithme Round Robin.
+    rr_index: usize,
 }
 
 impl LoadBalancer {
@@ -43,7 +45,30 @@ impl LoadBalancer {
         LoadBalancer {
             listener_config: bind_addr.to_string(), // Stocke la configuration pour créer un nouveau TcpListener
             servers,
+            rr_index: 0,
         }
+    }
+    /// Sélectionne l'index du prochain serveur dans la pool en utilisant l'algorithme Round Robin.
+    ///
+    /// Modifie l'état interne pour avancer l'index du serveur.
+    ///
+    /// # Retour
+    /// Retourne l'index du prochain serveur à utiliser dans la liste des serveurs.
+    ///
+    /// # Exemple
+    ///
+    /// ```
+    /// // Supposant que `lb` est une instance de `LoadBalancer` déjà initialisée avec des serveurs.
+    /// let next_server_index = lb.select_next_server_index();
+    /// println!("Le prochain serveur à utiliser est à l'index: {}", next_server_index);
+    /// ```
+    ///
+    /// Note: Cette méthode modifie l'état interne de l'instance pour le suivi de l'index Round Robin.
+    #[allow(dead_code)]
+    pub fn select_next_server_index(&mut self) -> usize {
+        let index = self.rr_index;
+        self.rr_index = (self.rr_index + 1) % self.servers.len();
+        index
     }
    
     /// Démarre le LoadBalancer pour écouter sur l'adresse configurée et router les demandes vers les serveurs.
@@ -75,7 +100,8 @@ impl LoadBalancer {
                 Err(e) => error!("Failed to accept connection: {}", e),
             }
         }
-    }
+     }
+        
     /// Traite une connexion client, en routant la demande vers un serveur sélectionné selon l'algorithme Round Robin.
     ///
     /// # Arguments
@@ -126,3 +152,32 @@ impl LoadBalancer {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new_load_balancer_initialization() {
+        let bind_addr = "192.168.1.137:8080";
+        let servers = vec!["192.168.1.137:8000".to_string(), "192.168.1.137:8001".to_string()];
+        let lb = LoadBalancer::new(bind_addr, servers.clone());
+
+        assert_eq!(lb.listener_config, bind_addr);
+        assert_eq!(lb.servers, servers);
+    }
+    #[test]
+    fn test_round_robin_server_selection() {
+        let mut lb = LoadBalancer::new("192.168.1.137:8080", vec!["192.168.1.137:8000".to_string(), "192.168.1.137:8001".to_string()]);
+
+        // Vérifiez l'indice du serveur sélectionné pour quelques rotations
+        assert_eq!(lb.select_next_server_index(), 0);
+        assert_eq!(lb.select_next_server_index(), 1);
+        assert_eq!(lb.select_next_server_index(), 0); // Retour au début
+}   
+
+}
+
+
+
+
