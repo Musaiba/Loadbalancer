@@ -37,7 +37,7 @@ Pour installer la  dépendances Python requises, exécutez la commande suivante 
     
    3. Faire ```cargo run``` pour lancer l'execution de notre LoadBalancer
    
-   4. Pour plus de specification concernant le serveurs d'ecoute, exple : cargo run -- -b 192.168.1.137:8080 -s IP_server1:8000,IP_server2:8002 (possible avec ```clap``
+   4. Pour plus de specification concernant le serveurs d'ecoute, exple : ```cargo run -- -b 192.168.1.137:8080 -s IP_server1:8000,IP_server2:8002``` (possible avec ```clap```)
    
    5. Acceder via votre navigateur à ```http://Votre_IP:8080``` vous serrez redirigé vers le serveur disponible grâce au Loadbalancer
 
