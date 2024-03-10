@@ -99,17 +99,54 @@
 <a href="#99" id="99">99</a>
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
 </pre></div><pre class="rust"><code><span class="doccomment">//! # Module LoadBalancer
 //!
 //! Ce module implémente un LoadBalancer simple utilisant l&#39;algorithme Round Robin pour distribuer les demandes entrantes vers une pool de serveurs. 
 //! L&#39;algorithme Round Robin sélectionne séquentiellement chaque serveur, assurant ainsi une distribution équitable des demandes.
+//! ## Fonctionnalités
+//! - Configuration dynamique via la ligne de commande pour l&#39;adresse d&#39;écoute et les serveurs cibles.
+//! - Distribution des demandes entrantes en utilisant l&#39;algorithme Round Robin.
+//! - Gestion des connexions TCP avec multithreading pour une meilleure performance et robustesse.
+
 
 </span><span class="kw">use </span>std::net::{TcpListener, TcpStream};
 <span class="kw">use </span>std::io::{Read, Write};
 <span class="kw">use </span>std::sync::{Arc, Mutex};
 <span class="kw">use </span>std::thread;
+<span class="kw">use </span>log::{info, warn, error};
 
-<span class="doccomment">/// Représente le LoadBalancer avec sa configuration d&#39;écoute et les serveurs disponibles.
+<span class="doccomment">/// Structure principale du LoadBalancer.
+///
+/// Ce LoadBalancer distribue les requêtes entrantes entre une pool de serveurs
+/// en utilisant l&#39;algorithme Round Robin pour une distribution équitable.
+
 </span><span class="kw">pub struct </span>LoadBalancer {
     <span class="doccomment">/// Configuration pour écouter les connexions TCP. Exemple : &quot;127.0.0.1:8080&quot;.
     </span>listener_config: String, 
@@ -124,6 +161,12 @@
     /// 
     /// * `bind_addr` - L&#39;adresse sur laquelle le LoadBalancer doit écouter les connexions entrantes.
     /// * `servers` - Les serveurs disponibles pour router les demandes.
+    ///
+    /// # Exemple
+    ///
+    /// ```
+    /// let lb = LoadBalancer::new(&quot;127.0.0.1:8080&quot;, vec![&quot;127.0.0.1:8000&quot;, &quot;127.0.0.1:8001&quot;]);
+    /// ```
     </span><span class="kw">pub fn </span>new(bind_addr: <span class="kw-2">&amp;</span>str, servers: Vec&lt;String&gt;) -&gt; LoadBalancer {
         LoadBalancer {
             listener_config: bind_addr.to_string(), <span class="comment">// Stocke la configuration pour créer un nouveau TcpListener
@@ -133,23 +176,32 @@
    
     <span class="doccomment">/// Démarre le LoadBalancer pour écouter sur l&#39;adresse configurée et router les demandes vers les serveurs.
     ///
-    /// Utilise `TcpListener` pour accepter les connexions entrantes et les distribue à l&#39;aide de threads séparés pour chaque connexion.
+    /// Initialise le logger et écoute sur l&#39;adresse configurée, distribuant les requêtes
+    /// entrantes aux serveurs backend selon l&#39;algorithme Round Robin.
     </span><span class="kw">pub fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let </span>listener = TcpListener::bind(<span class="kw-2">&amp;</span><span class="self">self</span>.listener_config).expect(<span class="string">&quot;Failed to bind address&quot;</span>);
+        <span class="kw">let </span>listener = <span class="kw">match </span>TcpListener::bind(<span class="kw-2">&amp;</span><span class="self">self</span>.listener_config) {
+            <span class="prelude-val">Ok</span>(listener) =&gt; {
+                <span class="macro">info!</span>(<span class="string">&quot;LoadBalancer running on {}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.listener_config);
+                listener
+            },
+            <span class="prelude-val">Err</span>(e) =&gt; {
+                <span class="macro">error!</span>(<span class="string">&quot;Failed to bind to {}: {}&quot;</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.listener_config, e);
+                <span class="kw">return</span>;
+            }
+        };
 
         <span class="kw">let </span>servers = Arc::new(Mutex::new(<span class="self">self</span>.servers.clone()));
 
         <span class="kw">for </span>stream <span class="kw">in </span>listener.incoming() {
-            <span class="kw">let </span>stream = stream.expect(<span class="string">&quot;Failed to accept connection&quot;</span>);
-            <span class="kw">let </span>servers_clone = Arc::clone(<span class="kw-2">&amp;</span>servers);
-
-            thread::spawn(<span class="kw">move </span>|| {
-                <span class="kw">let  </span>lb = LoadBalancer {
-                    listener_config: String::new(), 
-                    servers: Vec::new(), 
-                };
-                lb.handle_client(stream, servers_clone);
-            });
+            <span class="kw">match </span>stream {
+                <span class="prelude-val">Ok</span>(stream) =&gt; {
+                    <span class="kw">let </span>servers_clone = Arc::clone(<span class="kw-2">&amp;</span>servers);
+                    thread::spawn(<span class="kw">move </span>|| {
+                        <span class="self">Self</span>::handle_client(stream, servers_clone);
+                    });
+                },
+                <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">error!</span>(<span class="string">&quot;Failed to accept connection: {}&quot;</span>, e),
+            }
         }
     }
     <span class="doccomment">/// Traite une connexion client, en routant la demande vers un serveur sélectionné selon l&#39;algorithme Round Robin.
@@ -160,27 +212,40 @@
     /// * `servers` - Une référence partagée à la liste des serveurs.
     ///
     /// La méthode établit une connexion au serveur suivant dans la liste, transfère la demande du client, puis lit et retourne la réponse du serveur au client.
-    </span><span class="kw">fn </span>handle_client(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>client_stream: TcpStream, servers: Arc&lt;Mutex&lt;Vec&lt;String&gt;&gt;&gt;) {
+    </span><span class="kw">fn </span>handle_client(<span class="kw-2">mut </span>client_stream: TcpStream, servers: Arc&lt;Mutex&lt;Vec&lt;String&gt;&gt;&gt;) {
         <span class="kw">let </span><span class="kw-2">mut </span>rr_index = <span class="number">0</span>;
 
         <span class="kw">loop </span>{
             <span class="kw">let </span>server_addr = {
                 <span class="kw">let </span>servers = servers.lock().unwrap();
-                servers[rr_index].clone()
-            };
+                servers[rr_index % servers.len()].clone() <span class="comment">// Cycle through servers using modulo
+            </span>};
 
             <span class="kw">match </span>TcpStream::connect(<span class="kw-2">&amp;</span>server_addr) {
                 <span class="prelude-val">Ok</span>(<span class="kw-2">mut </span>server_stream) =&gt; {
                     <span class="kw">let </span><span class="kw-2">mut </span>buffer = [<span class="number">0</span>; <span class="number">512</span>];
-                    <span class="kw">let </span>bytes_read = client_stream.read(<span class="kw-2">&amp;mut </span>buffer).unwrap();
-                    server_stream.write_all(<span class="kw-2">&amp;</span>buffer[..bytes_read]).unwrap();
+                    <span class="kw">match </span>client_stream.read(<span class="kw-2">&amp;mut </span>buffer) {
+                        <span class="prelude-val">Ok</span>(bytes_read) =&gt; {
+                            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = server_stream.write_all(<span class="kw-2">&amp;</span>buffer[..bytes_read]) {
+                                <span class="macro">warn!</span>(<span class="string">&quot;Failed to send data to server: {}&quot;</span>, e);
+                                <span class="kw">continue</span>;
+                            }
 
-                    <span class="kw">let </span><span class="kw-2">mut </span>server_response = Vec::new();
-                    server_stream.read_to_end(<span class="kw-2">&amp;mut </span>server_response).unwrap();
-                    client_stream.write_all(<span class="kw-2">&amp;</span>server_response).unwrap();
+                            <span class="kw">let </span><span class="kw-2">mut </span>server_response = Vec::new();
+                            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = server_stream.read_to_end(<span class="kw-2">&amp;mut </span>server_response) {
+                                <span class="macro">warn!</span>(<span class="string">&quot;Failed to read response from server: {}&quot;</span>, e);
+                                <span class="kw">continue</span>;
+                            }
+
+                            <span class="kw">if let </span><span class="prelude-val">Err</span>(e) = client_stream.write_all(<span class="kw-2">&amp;</span>server_response) {
+                                <span class="macro">warn!</span>(<span class="string">&quot;Failed to send server response to client: {}&quot;</span>, e);
+                            }
+                        },
+                        <span class="prelude-val">Err</span>(e) =&gt; <span class="macro">warn!</span>(<span class="string">&quot;Failed to read data from client: {}&quot;</span>, e),
+                    }
 
                     <span class="kw">break</span>;
-                }
+                },
                 <span class="prelude-val">Err</span>(<span class="kw">_</span>) =&gt; {
                     rr_index = (rr_index + <span class="number">1</span>) % servers.lock().unwrap().len();
                     <span class="kw">continue</span>;
@@ -189,15 +254,4 @@
         }
     }
 }
-
-<span class="kw">impl </span>Clone <span class="kw">for </span>LoadBalancer {
-    <span class="doccomment">/// Permet de cloner une instance de `LoadBalancer`, notamment sa configuration et la liste des serveurs.
-    </span><span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
-        LoadBalancer {
-            listener_config: <span class="self">self</span>.listener_config.clone(),
-            servers: <span class="self">self</span>.servers.clone(),
-        }
-    }
-}
-
 </code></pre></div></section></main></body></html>

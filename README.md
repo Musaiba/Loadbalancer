@@ -5,9 +5,15 @@
 
 Ce projet consiste en mettre en place un equilibreur de charge en Rust . Ainsi tout au long de ce projet nous allons utiliser la logique de l'algorithme de Round Robin pour mettre en place notre LoadBalancer .
 
-### **Prérequis**:
+## Fonctionnalités
+
+- Distribution des requêtes entrantes en utilisant l'algorithme Round Robin.
+- Configuration dynamique des adresses des serveurs via la ligne de commande.
+- Journaux d'événements détaillés pour le suivi des opérations et le débogage.
+
+## **Prérequis**:
 	
-  1. Telecharger et Installer Rust  . 
+  1. Telecharger et Installer Rust à partir de [la page officielle Rust](https://www.rust-lang.org/tools/install). . 
   2. S'assurer d'avoir les Outils de developpement C++ de Visual Studio
   3. Python 3.x installé
   4. Bibliothèques Python requises : Flask.  
@@ -19,7 +25,8 @@ Pour installer la  dépendances Python requises, exécutez la commande suivante 
 ## **Utilisation**
   1.  Lancez les serveurs python via les commandes :
          
-      ```python3 serveur1 ou serveur2 ```
+      ```python3 server1.py```
+      ```python3 server2.py ```
         
         Ne pas oubliez de modifier les adresses Ip des serveurs 
       
@@ -32,7 +39,10 @@ Pour installer la  dépendances Python requises, exécutez la commande suivante 
    4. Acceder via votre navigateur à ```http://Votre_IP:8080``` vous serrez redirigé vers le serveur disponible grâce au Loadbalancer
 
 
-  ## **Documentation**
+## **Documentation**
  Pour Consulter la documentation de notre projet faire un :
 
             ```cargo doc --open```
+            
+## **Remerciements**
+ Nous tenons à remercier tous ceux qui ont contribué à la réalisation de ce projet, y compris les enseignants de l'ESGI, les ressources en ligne, et la communauté Rust pour leur support et leurs conseils précieux.
