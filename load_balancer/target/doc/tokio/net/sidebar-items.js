@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"fn":["lookup_host"],"mod":["tcp","windows"],"struct":["TcpListener","TcpSocket","TcpStream","UdpSocket"],"trait":["ToSocketAddrs"]};
+window.SIDEBAR_ITEMS = {"fn":["lookup_host"],"mod":["tcp","unix"],"struct":["TcpListener","TcpSocket","TcpStream","UdpSocket","UnixDatagram","UnixListener","UnixSocket","UnixStream"],"trait":["ToSocketAddrs"]};

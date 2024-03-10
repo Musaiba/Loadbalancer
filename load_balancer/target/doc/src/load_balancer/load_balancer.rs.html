@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src\load_balancer.rs`."><title>load_balancer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="load_balancer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/load_balancer.rs`."><title>load_balancer.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="load_balancer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -100,188 +99,48 @@
 <a href="#99" id="99">99</a>
 <a href="#100" id="100">100</a>
 <a href="#101" id="101">101</a>
-<a href="#102" id="102">102</a>
-<a href="#103" id="103">103</a>
-<a href="#104" id="104">104</a>
-<a href="#105" id="105">105</a>
-<a href="#106" id="106">106</a>
-<a href="#107" id="107">107</a>
-<a href="#108" id="108">108</a>
-<a href="#109" id="109">109</a>
-<a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a>
-<a href="#112" id="112">112</a>
-<a href="#113" id="113">113</a>
-<a href="#114" id="114">114</a>
-<a href="#115" id="115">115</a>
-<a href="#116" id="116">116</a>
-<a href="#117" id="117">117</a>
-<a href="#118" id="118">118</a>
-<a href="#119" id="119">119</a>
-<a href="#120" id="120">120</a>
-<a href="#121" id="121">121</a>
-<a href="#122" id="122">122</a>
-<a href="#123" id="123">123</a>
-<a href="#124" id="124">124</a>
-<a href="#125" id="125">125</a>
-<a href="#126" id="126">126</a>
-<a href="#127" id="127">127</a>
-<a href="#128" id="128">128</a>
-<a href="#129" id="129">129</a>
-<a href="#130" id="130">130</a>
-<a href="#131" id="131">131</a>
-<a href="#132" id="132">132</a>
-<a href="#133" id="133">133</a>
-<a href="#134" id="134">134</a>
-<a href="#135" id="135">135</a>
-<a href="#136" id="136">136</a>
-<a href="#137" id="137">137</a>
-<a href="#138" id="138">138</a>
-<a href="#139" id="139">139</a>
-<a href="#140" id="140">140</a>
-<a href="#141" id="141">141</a>
-<a href="#142" id="142">142</a>
-<a href="#143" id="143">143</a>
-<a href="#144" id="144">144</a>
-<a href="#145" id="145">145</a>
-<a href="#146" id="146">146</a>
-<a href="#147" id="147">147</a>
-<a href="#148" id="148">148</a>
-<a href="#149" id="149">149</a>
-<a href="#150" id="150">150</a>
-<a href="#151" id="151">151</a>
-<a href="#152" id="152">152</a>
-<a href="#153" id="153">153</a>
-<a href="#154" id="154">154</a>
-<a href="#155" id="155">155</a>
-<a href="#156" id="156">156</a>
-<a href="#157" id="157">157</a>
-<a href="#158" id="158">158</a>
-<a href="#159" id="159">159</a>
-<a href="#160" id="160">160</a>
-<a href="#161" id="161">161</a>
-<a href="#162" id="162">162</a>
-<a href="#163" id="163">163</a>
-<a href="#164" id="164">164</a>
-<a href="#165" id="165">165</a>
-<a href="#166" id="166">166</a>
-<a href="#167" id="167">167</a>
-</pre></div><pre class="rust"><code><span class="doccomment">//!##  Introduction detaille 
+</pre></div><pre class="rust"><code><span class="doccomment">//! # Module LoadBalancer
+//!
+//! Ce module implémente un LoadBalancer simple utilisant l&#39;algorithme Round Robin pour distribuer les demandes entrantes vers une pool de serveurs. 
+//! L&#39;algorithme Round Robin sélectionne séquentiellement chaque serveur, assurant ainsi une distribution équitable des demandes.
 
-//! Dans ce module nous allons implementer la logique de notre LoadBalancer
-//!
-//! l'algorithme que nous avons decider d'implementer pour gerer le LoadBalancing est l'algorithme de Round Robin 
-//!
-//! Il s'agit d'un algorithme qui choisi sequentiellement chaque serveur dans une pool de serveur
-//! elle se base sur un indice de rotation qui se charge de determiner quelle source utiliser pour chaque nouvelle demande  
-
-//!## Structure 
-//! Nous allons commencer par definir la structure de notre LoadBalancer 
-
-//! ```
-//! pub struct LoadBalancer { 
-//!    listener_config: String, 
-//!     servers: Vec&lt;String&gt;, 
-//!                   }
-//! ```
-//! Cette structure  comprend  2 parametres a savoir un vecteur qui va stocker les serveurs auxquels notre LoadBalancer sera liés , 
-//! puis un autre parametre listener_config  qui stocke la configuration du TcpListener associer a notre LoadBalancer 
-//! TcpListener ici represente une structure qui permet de creer un point liaison a partir duquel nos connexions Tcp entrantes peuvent etre gerer , 
-//! en gros il nous permet de creer un serveur Tcp basique 
-
-//!## Methode de la structure LoadBalancer
-
-//! Par la suite nous allons implementer les differentes methodes de notre LoadBalancer a savoir :
-//! ```
-//!  pub fn new(bind_addr: &amp;str, servers: Vec&lt;String&gt;)
-//!```
-//! qui nous permettra de creer une nouvelle instance de notre LoadBalancer
-//! ```
-//!  pub fn run(&amp;self)
-//!```
-//! Methode dans laquelle on va implementer la logique d'execution de notre LoadBalancer 
-//!# Analyse de la methode run()
-//!  Deux  Objets sont declare dans cette methode , a savoir 
-//! ```
-//! let listener = TcpListener::bind(&amp;self.listener_config).expect("Failed to bind address")
-//!```
-//! qui se charge d'ecouter  sur une adresse specifique au travers de la liaison faite a partir de la methode Bind() de la structure TcpListener
-//! Puis nous avons l'objet 
-//! ```
-//!let servers = Arc::new(Mutex::new(self.servers.clone()));
-//!```
-//! qui va stocker une copie des serveurs , permettant ainsi au differents Threads d'acceder a une copie de nos serveur , sans toutefois  modifier la structure principale . 
-//! Nos objets crees, nous allons par la suite ecouter chaque connection entrante  et nous allons  boucler sur chacune d'entres elles , afin de les traiter individuelement .
-//! Ainsi a l'aide de la boucle for et de la methode incoming() nous allons iterer sur chaque connection entrantes
-//! ```
-//! for stream in listener.incoming()
-//!```
-//!plus precisement  la methode incomming() de la structure TcpStream , creer un iterateur , en attente de connexion ,  qui renvoi un valeur correspondant a la prochaine connexion entrante
-//! A l'aide de la methode  except() on recupere cette connection entrante , et on pourra generer par la meme occasion une exception dans le cas l'acceptation ne se deroule pas comme prevu
-//!
-//! Par la suite nous allons creer un nouveau Threads qui se chargera de gerer chaque nouvelles  connection entrante , selon le modele de gestion definit dans la fonction handle_client()
-//! ```
-//!  thread::spawn()
-//!```
-//! Nous avons opter pour une gestion des connection entrante dans un Threads differentes , du Threads principale , pour eviter les probleme lies a la duree de vie 
-//!# Analyse de la methode handle_client()
-//! Cette methode se charge de gerer les differentes connexions entrantes  des utilisateurs et de determiner vers quels serveurs diriger les differentes requetes des clients 
-//! 
-//! Ainsi on commence par initialiser a 0 la variable mutable rr_index , cette variable nous permettra de suivre l'index des serveurs a utiliser lors de l'achemeniment des requete 
-//! par notre LoadBalancer
-//! Puis dans une boucle infinie   on recupere , le prochain serveur vers lequel nos requetes seront acheminés
-//!  en s'assurant que notre Thread ai un accès exclussif a notre liste de serveur 
-//! ```
-//!   let server_addr = {  let servers = servers.lock().unwrap(); servers[rr_index].clone() };         
-//!```
-//!  Par la suite a partir d'un match() on realise une tentative de connexion vers le serveur en question en utilisant la methode connect() de la structure TcpStream
-//!
-//! Cette methode retourne un Result&lt;TcpStream,Error&gt; qui indique si la connexion a reussi ou pas. Dans le cas ou la 
-//! connexion a reussi [Ok(mut server_stream)]  on definit les differents operations liées au  relais de données .
-//! Ainsi dans un premier temps on definit un tampon de 512 octects pour stocker les donnees du client , puis on lit les données provenant du client (client_stream.read()) et on les stocke dans le buffer
-//! ```
-//!   let mut buffer = [0; 512];
-//!   let bytes_read = client_stream.read(&amp;mut buffer).unwrap();       
-//!```
-//! Ici bytes_read va stocker le nombre d'octect lu
-//!
-//! Puis ces données lu depuis le client sont ecrite directement sur le serveur server_stream
-//! ```
-//!   server_stream.write_all(&amp;buffer[..bytes_read]).unwrap();         
-//!```
-//! Par la suite on crée un vecteur vide qui va contenir les reponses du serveur . 
-//!
-//! On lit la reponse complete du serveur dans  le vecteur , puis on ecrit cette reponse sur client_stream qui represente notre connexion client 
-//! ```
-//!   let mut server_response = Vec::new();
-//!    server_stream.read_to_end(&amp;mut server_response).unwrap();
-//!     client_stream.write_all(&amp;server_response).unwrap();      
-//!```
 </span><span class="kw">use </span>std::net::{TcpListener, TcpStream};
 <span class="kw">use </span>std::io::{Read, Write};
 <span class="kw">use </span>std::sync::{Arc, Mutex};
 <span class="kw">use </span>std::thread;
 
-<span class="kw">pub struct </span>LoadBalancer {
-    listener_config: String, <span class="comment">// Suppose que la configuration de TcpListener est une chaîne pour l'exemple
+<span class="doccomment">/// Représente le LoadBalancer avec sa configuration d&#39;écoute et les serveurs disponibles.
+</span><span class="kw">pub struct </span>LoadBalancer {
+    <span class="doccomment">/// Configuration pour écouter les connexions TCP. Exemple : &quot;127.0.0.1:8080&quot;.
+    </span>listener_config: String, 
+    <span class="doccomment">/// Liste des adresses des serveurs (ex: &quot;192.168.1.1:80&quot;) vers lesquels router les demandes.
     </span>servers: Vec&lt;String&gt;,
 }
 
 <span class="kw">impl </span>LoadBalancer {
-    <span class="kw">pub fn </span>new(bind_addr: <span class="kw-2">&amp;</span>str, servers: Vec&lt;String&gt;) -&gt; LoadBalancer {
+    <span class="doccomment">/// Crée une nouvelle instance de `LoadBalancer`.
+    ///
+    /// # Arguments
+    /// 
+    /// * `bind_addr` - L&#39;adresse sur laquelle le LoadBalancer doit écouter les connexions entrantes.
+    /// * `servers` - Les serveurs disponibles pour router les demandes.
+    </span><span class="kw">pub fn </span>new(bind_addr: <span class="kw-2">&amp;</span>str, servers: Vec&lt;String&gt;) -&gt; LoadBalancer {
         LoadBalancer {
             listener_config: bind_addr.to_string(), <span class="comment">// Stocke la configuration pour créer un nouveau TcpListener
             </span>servers,
         }
     }
    
-    <span class="kw">pub fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>) {
-        <span class="kw">let </span>listener = TcpListener::bind(<span class="kw-2">&amp;</span><span class="self">self</span>.listener_config).expect(<span class="string">"Failed to bind address"</span>);
+    <span class="doccomment">/// Démarre le LoadBalancer pour écouter sur l&#39;adresse configurée et router les demandes vers les serveurs.
+    ///
+    /// Utilise `TcpListener` pour accepter les connexions entrantes et les distribue à l&#39;aide de threads séparés pour chaque connexion.
+    </span><span class="kw">pub fn </span>run(<span class="kw-2">&amp;</span><span class="self">self</span>) {
+        <span class="kw">let </span>listener = TcpListener::bind(<span class="kw-2">&amp;</span><span class="self">self</span>.listener_config).expect(<span class="string">&quot;Failed to bind address&quot;</span>);
 
         <span class="kw">let </span>servers = Arc::new(Mutex::new(<span class="self">self</span>.servers.clone()));
 
         <span class="kw">for </span>stream <span class="kw">in </span>listener.incoming() {
-            <span class="kw">let </span>stream = stream.expect(<span class="string">"Failed to accept connection"</span>);
+            <span class="kw">let </span>stream = stream.expect(<span class="string">&quot;Failed to accept connection&quot;</span>);
             <span class="kw">let </span>servers_clone = Arc::clone(<span class="kw-2">&amp;</span>servers);
 
             thread::spawn(<span class="kw">move </span>|| {
@@ -293,8 +152,15 @@
             });
         }
     }
-
-    <span class="kw">fn </span>handle_client(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>client_stream: TcpStream, servers: Arc&lt;Mutex&lt;Vec&lt;String&gt;&gt;&gt;) {
+    <span class="doccomment">/// Traite une connexion client, en routant la demande vers un serveur sélectionné selon l&#39;algorithme Round Robin.
+    ///
+    /// # Arguments
+    ///
+    /// * `client_stream` - Le flux TCP associé à la connexion client.
+    /// * `servers` - Une référence partagée à la liste des serveurs.
+    ///
+    /// La méthode établit une connexion au serveur suivant dans la liste, transfère la demande du client, puis lit et retourne la réponse du serveur au client.
+    </span><span class="kw">fn </span>handle_client(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="kw-2">mut </span>client_stream: TcpStream, servers: Arc&lt;Mutex&lt;Vec&lt;String&gt;&gt;&gt;) {
         <span class="kw">let </span><span class="kw-2">mut </span>rr_index = <span class="number">0</span>;
 
         <span class="kw">loop </span>{
@@ -325,7 +191,8 @@
 }
 
 <span class="kw">impl </span>Clone <span class="kw">for </span>LoadBalancer {
-    <span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
+    <span class="doccomment">/// Permet de cloner une instance de `LoadBalancer`, notamment sa configuration et la liste des serveurs.
+    </span><span class="kw">fn </span>clone(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="self">Self </span>{
         LoadBalancer {
             listener_config: <span class="self">self</span>.listener_config.clone(),
             servers: <span class="self">self</span>.servers.clone(),

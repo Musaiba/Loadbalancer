@@ -27,7 +27,9 @@ Pour installer la  dépendances Python requises, exécutez la commande suivante 
            
            ```let lb = LoadBalancer::new("Votre_IP:8080", vec!["IP_Serveur1:8000", "IP_Serveur1:8001"].iter().map(|s| s.to_string()).collect())```
     
-   3.  Puis faire un cargo run pour lancer l'execution de notre LoadBalancer
+   3.  faire ```cargo run``` pour lancer l'execution de notre LoadBalancer
+   
+   4. Acceder via votre navigateur à ```http://Votre_IP:8080``` vous serrez redirigé vers le serveur disponible grâce au Loadbalancer
 
 
   ## **Documentation**

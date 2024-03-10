@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `C:\Users\mnyoga\.cargo\registry\src\index.crates.io-6f17d22bba15001f\tokio-macros-2.2.0\src\lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ac92e1bbe349e143.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tokio_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.76.0 (07dca489a 2024-02-04)" data-channel="1.76.0" data-search-js="search-2b6ce74ff89ae146.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-f2adc0d6ca4d09fb.js"></script><script defer src="../../static.files/src-script-39ed315d46fb705f.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-305769736d49e732.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-feafe1bb7466e4bd.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><div class="sidebar-resizer"></div>
-    <main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `/home/kali/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-macros-2.2.0/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-9ee3a5e31a2afa3e.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tokio_macros" data-themes="" data-resource-suffix="" data-rustdoc-version="1.75.0 (82e1608df 2023-12-21)" data-channel="1.75.0" data-search-js="search-8fbf244ebcf71464.js" data-settings-js="settings-74424d7eec62a23e.js" ><script src="../../static.files/storage-fec3eaa3851e447d.js"></script><script defer src="../../static.files/src-script-3280b574d94e47b4.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-9dd44ab47b99a0fb.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-5d8b3c7633ad77ba.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -541,7 +540,7 @@
 /// To use the multi-threaded runtime, the macro can be configured using
 ///
 /// ```
-/// #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
+/// #[tokio::main(flavor = &quot;multi_thread&quot;, worker_threads = 10)]
 /// # async fn main() {}
 /// ```
 ///
@@ -557,7 +556,7 @@
 /// the macro can be configured using
 ///
 /// ```
-/// #[tokio::main(flavor = "current_thread")]
+/// #[tokio::main(flavor = &quot;current_thread&quot;)]
 /// # async fn main() {}
 /// ```
 ///
@@ -572,7 +571,7 @@
 /// ```rust
 /// #[tokio::main]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -585,7 +584,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -595,9 +594,9 @@
 /// The basic scheduler is single-threaded.
 ///
 /// ```rust
-/// #[tokio::main(flavor = "current_thread")]
+/// #[tokio::main(flavor = &quot;current_thread&quot;)]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -610,7 +609,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -620,7 +619,7 @@
 /// ```rust
 /// #[tokio::main(worker_threads = 2)]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -634,7 +633,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -642,9 +641,9 @@
 /// ### Configure the runtime to start with time paused
 ///
 /// ```rust
-/// #[tokio::main(flavor = "current_thread", start_paused = true)]
+/// #[tokio::main(flavor = &quot;current_thread&quot;, start_paused = true)]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -658,7 +657,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -670,9 +669,9 @@
 /// ```rust
 /// use tokio as tokio1;
 ///
-/// #[tokio1::main(crate = "tokio1")]
+/// #[tokio1::main(crate = &quot;tokio1&quot;)]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -687,7 +686,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -710,9 +709,9 @@
 /// ### Using default
 ///
 /// ```rust
-/// #[tokio::main(flavor = "current_thread")]
+/// #[tokio::main(flavor = &quot;current_thread&quot;)]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -725,7 +724,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -735,9 +734,9 @@
 /// ```rust
 /// use tokio as tokio1;
 ///
-/// #[tokio1::main(crate = "tokio1")]
+/// #[tokio1::main(crate = &quot;tokio1&quot;)]
 /// async fn main() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 ///
@@ -752,7 +751,7 @@
 ///         .build()
 ///         .unwrap()
 ///         .block_on(async {
-///             println!("Hello world");
+///             println!(&quot;Hello world&quot;);
 ///         })
 /// }
 /// ```
@@ -778,7 +777,7 @@
 /// To use the multi-threaded runtime, the macro can be configured using
 ///
 /// ```no_run
-/// #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+/// #[tokio::test(flavor = &quot;multi_thread&quot;, worker_threads = 1)]
 /// async fn my_test() {
 ///     assert!(true);
 /// }
@@ -807,7 +806,7 @@
 /// ### Using the multi-thread runtime
 ///
 /// ```no_run
-/// #[tokio::test(flavor = "multi_thread")]
+/// #[tokio::test(flavor = &quot;multi_thread&quot;)]
 /// async fn my_test() {
 ///     assert!(true);
 /// }
@@ -855,7 +854,7 @@
 /// ### Set number of worker threads
 ///
 /// ```no_run
-/// #[tokio::test(flavor ="multi_thread", worker_threads = 2)]
+/// #[tokio::test(flavor =&quot;multi_thread&quot;, worker_threads = 2)]
 /// async fn my_test() {
 ///     assert!(true);
 /// }
@@ -909,9 +908,9 @@
 /// ```rust
 /// use tokio as tokio1;
 ///
-/// #[tokio1::test(crate = "tokio1")]
+/// #[tokio1::test(crate = &quot;tokio1&quot;)]
 /// async fn my_test() {
-///     println!("Hello world");
+///     println!(&quot;Hello world&quot;);
 /// }
 /// ```
 </span><span class="attr">#[proc_macro_attribute]
@@ -942,7 +941,7 @@
 </span><span class="kw">pub fn </span>main_fail(_args: TokenStream, _item: TokenStream) -&gt; TokenStream {
     syn::Error::new(
         proc_macro2::Span::call_site(),
-        <span class="string">"The #[tokio::main] macro requires rt or rt-multi-thread."</span>,
+        <span class="string">&quot;The #[tokio::main] macro requires rt or rt-multi-thread.&quot;</span>,
     )
     .to_compile_error()
     .into()
@@ -956,7 +955,7 @@
 </span><span class="kw">pub fn </span>test_fail(_args: TokenStream, _item: TokenStream) -&gt; TokenStream {
     syn::Error::new(
         proc_macro2::Span::call_site(),
-        <span class="string">"The #[tokio::test] macro requires rt or rt-multi-thread."</span>,
+        <span class="string">&quot;The #[tokio::test] macro requires rt or rt-multi-thread.&quot;</span>,
     )
     .to_compile_error()
     .into()
