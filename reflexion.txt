@@ -1,0 +1,22 @@
+
+Réflexions sur le Projet LoadBalancer et ses Étapes
+
+J'ai réussi à franchir toutes les étapes jusqu'au module 3 du Projet LoadBalancer, notamment en mettant en œuvre l'algorithme Round Robin
+pour la répartition des requêtes et en configurant le serveur TCP de manière initiale. 
+J'ai également tenté d'intégrer des fonctionnalités avancées telles que l'analyse d'arguments avec la crate clap et l'utilisation du multithreading avec les threads natifs de Rust. Bien que je n'aie pas identifié de bugs majeurs, 
+j'ai remarqué une légère latence dans le traitement des requêtes lors de l'exécution d'un grand nombre de connexions simultanées.
+
+Améliorations de Performance :
+
+Pour optimiser les performances, j'ai revu la gestion des threads en limitant le nombre de threads actifs simultanément et en 
+réutilisant certains threads pour le traitement de plusieurs requêtes, ce qui a contribué à réduire l'overhead lié à la création et à la destruction fréquente des threads.
+
+Développements Futurs :
+
+Si je devais poursuivre ce projet, j'explorerais l'utilisation de la crate tokio pour mettre en place une solution asynchrone, 
+dans le but d'améliorer les performances et la scalabilité du LoadBalancer. De plus, j'envisagerais d'ajouter une fonctionnalité de logging plus avancée pour un diagnostic plus précis des problèmes et une surveillance plus efficace du trafic.
+
+Conclusion :
+
+Ce projet a été une expérience d'apprentissage enrichissante qui m'a encouragé à approfondir mes connaissances en Rust et à explorer de nouveaux domaines de la programmation. 
+Je suis reconnaissant pour les défis qu'il m'a présentés et les compétences qu'il m'a permis de développer.
